@@ -1,22 +1,28 @@
 function myersCalendar(year: number): string[] {
-  if (year < 1) return []
+  // Validar argumento
+  if (typeof year !== 'number' || isNaN(year) || !isFinite(year) || year < 1) {
+    return [];
+  }
 
-  const inicio = Date.UTC(year, 0, 1)
-  const fin = Date.UTC(year + 1, 0, 1)
-  const totalDias = (fin - inicio) / (1000 * 60 * 60 * 24)
-  const result: string[] = []
+  // Asegurar que es entero
+  year = Math.floor(year);
 
-  for (let i = 0; i < totalDias; i++) {
-    const date = new Date(inicio + (1000 * 60 * 60 * 24 * i))
-    const day = date.getUTCDate()
-    const month = date.getUTCMonth() + 1
-    const year = date.getUTCFullYear()
+  const result: string[] = [];
 
-    if ((date.getDay() === 5 && day === 13) || (day === 31 && month === 10)) {
-      result.push(`${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`)
+  // Halloween - validar que el año es válido
+  result.push(`${year}-10-31`);
+
+  // Viernes 13 - buscar en cada mes
+  for (let month = 1; month <= 12; month++) {
+    const date = new Date(year, month - 1, 13);
+    // Validar adicionalmente que la fecha creada corresponde al año correcto
+    if (date.getFullYear() === year && date.getDay() === 5) {
+      const monthStr = month < 10 ? '0' + month : '' + month;
+      result.push(year + '-' + monthStr + '-13');
     }
   }
-  return result
+
+  return result.sort((a, b) => a.localeCompare(b));
 }
 
 console.log(myersCalendar(2025))
