@@ -1,17 +1,20 @@
 function changeLock(current: string, target: string): number {
-let count = 0;
+  let count = 0;
+  const len = current.length;
+  let i = 0;
 
-  for (let i = 0; i < current.length; i++) {
-    const curr = Number(current[i]);
-    const targ = Number(target[i]);
+  // Acceso directo a charCodeAt para evitar Number() y parseo
+  while (i < len) {
+    const c = current.charCodeAt(i) - 48; // '0' = 48 → 0, '1' = 49 → 1, etc.
+    const t = target.charCodeAt(i) - 48;
 
-    if (curr !== targ) {
-      const diff1 = Math.abs(targ - curr);           // hacia adelante
-      const diff2 = 10 - Math.abs(targ - curr);      // hacia atrás
-      count += Math.min(diff1, diff2);
+    if (c !== t) {
+      const diff = (c - t + 10) % 10; // diff hacia adelante (0 a 9)
+      const back = (t - c + 10) % 10; // diff hacia atrás
+      count += diff < back ? diff : back;
     }
+    i++;
   }
-
   return count;
 }
 
